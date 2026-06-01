@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="man/figures/logo_full.png" alt="baobabStats" width="220"/>
+  <img src="man/figures/logo.png" alt="baobabStats" width="220"/>
 </p>
 
 <h1 align="center">baobabStats</h1>
