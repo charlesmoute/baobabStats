@@ -1,0 +1,78 @@
+Package: baobabStats
+Type: Package
+Title: Suite Integree R pour l'Analyse des Recensements et Enquetes en Afrique
+Version: 1.1.1
+Date: 2026-05-31
+Authors@R:
+    person("Charles", "Moute", email = "charles.moute@gmail.com", role = c("aut", "cre"))
+Maintainer: Charles Moute <charles.moute@gmail.com>
+Description: baobabStats unifie de maniere harmonieuse trois moteurs experimentaux
+    (DemoStats, CensusAnalytics et statAfrikR) en une seule suite coherente, en
+    francais, couvrant l'ensemble du cycle de production statistique : collecte
+    (CSPro, KoboToolbox, ODK), traitement (nettoyage, imputation, dedoublonnage,
+    harmonisation geographique), evaluation de la qualite (controle intrinseque par
+    indices d'attraction d'age - Whipple, Myers, Bachi - et controle a posteriori par
+    backcheck/bcstats et enquete post-censitaire avec appariement et estimation par
+    systeme dual), calcul d'indicateurs demographiques, tabulations, projections
+    (composantes par cohorte et microsimulation), visualisation prete pour publication
+    et diffusion multi-format (PNG, HTML, Word, PDF, SDMX, DDI). La suite ajoute trois
+    innovations : une configuration pilotee par fichier Excel, un module d'interpretation
+    dynamique des resultats et un moteur de generation de prompts pour assister
+    l'interpretation par IA. Une application Shiny et des modules complementaires
+    RStudio sont fournis pour une prise en main fluide, y compris par des non-inities.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Language: fr
+Depends:
+    R (>= 4.1.0)
+Imports:
+    dplyr,
+    tidyr,
+    stringr,
+    stringdist,
+    purrr,
+    tibble,
+    rlang,
+    glue,
+    cli,
+    ggplot2,
+    scales,
+    readxl,
+    writexl,
+    openxlsx,
+    haven,
+    jsonlite
+Suggests:
+    data.table,
+    sf,
+    officer,
+    rmarkdown,
+    knitr,
+    mice,
+    missForest,
+    cowplot,
+    magick,
+    testthat (>= 3.0.0),
+    shiny (>= 1.7.0),
+    shinydashboard,
+    shinyWidgets,
+    DT,
+    plotly,
+    flextable,
+    gtsummary,
+    kableExtra,
+    gt,
+    leaflet,
+    survey,
+    dbscan,
+    cluster,
+    digest,
+    uuid,
+    httr,
+    rstudioapi
+VignetteBuilder: knitr
+RoxygenNote: 7.2.3
+URL: https://github.com/charlesmoute/baobabStats
+BugReports: https://github.com/charlesmoute/baobabStats/issues
+Config/testthat/edition: 3

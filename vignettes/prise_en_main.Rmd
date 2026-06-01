@@ -1,0 +1,210 @@
+---
+title: "Prise en main de baobabStats avec des données simulées"
+author: "Charles Mouté"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{Prise en main de baobabStats avec des données simulées}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.5, dpi = 120,
+  eval = FALSE  # exécuter manuellement ; les dépendances ne sont pas garanties au build
+)
+library(baobabStats)
+```
+
+> **baobabStats — Tools for Data, Rooted in Africa.**
+> Ce tutoriel suit le cycle statistique complet (collecte → diffusion) sur un
+> petit recensement **simulé**, afin de prendre en main le package sans aucune
+> donnée réelle.
+
+# 1. Installation et chargement
+
+```{r install}
+# install.packages("baobabStats_1.0.0.tar.gz", repos = NULL, type = "source")
+library(baobabStats)
+
+# Couleurs et logo de l'identité visuelle
+bs_couleurs()
+bs_logo("embleme")
+```
+
+# 2. Générer des données simulées
+
+Nous simulons 5 000 individus d'un recensement, avec deux défauts volontaires
+typiques des données africaines : **attraction des âges ronds** (heaping) et
+**variantes orthographiques de régions** (à harmoniser).
+
+```{r simul}
+set.seed(2026)
+n <- 5000
+regions <- c("Centre","Littoral","Ouest","Nord","Extreme-Nord",
+             "Adamaoua","Est","Sud","Nord-Ouest","Sud-Ouest")
+
+age_vrai <- pmin(round(rexp(n, 1/24)), 95)
+heap     <- runif(n) < 0.35                       # 35 % d'arrondi à un multiple de 5
+age      <- ifelse(heap, round(age_vrai / 5) * 5, age_vrai)
+
+indiv <- data.frame(
+  id_ind     = sprintf("IND%05d", 1:n),
+  id_men     = sprintf("MEN%04d", sample(1:1500, n, replace = TRUE)),
+  region     = sample(regions, n, replace = TRUE),
+  age        = age,
+  sexe       = sample(c(1, 2), n, replace = TRUE, prob = c(.49, .51)),
+  etat_matri = sample(c("Celibataire","Marie","Veuf","Divorce"), n, TRUE),
+  alphabet   = sample(c(0, 1), n, replace = TRUE, prob = c(.32, .68)),
+  activite   = sample(c("Occupe","Chomeur","Inactif"), n, TRUE, prob = c(.55,.12,.33)),
+  handicap   = sample(c(0, 1), n, replace = TRUE, prob = c(.94, .06)),
+  poids      = round(runif(n, 0.8, 1.2), 3),
+  stringsAsFactors = FALSE
+)
+# introduire des manquants et des variantes de région
+indiv$alphabet[sample(1:n, 200)] <- NA
+indiv$region[sample(1:n, 50)]    <- "Extreme Nord"   # variante
+indiv$region[sample(1:n, 30)]    <- "Adamawa"        # variante anglaise
+
+# Un jeu de données de démonstration équivalent est livré avec le package :
+# indiv <- bs_collecter(system.file("extdata", "demo_individus.csv", package = "baobabStats"))
+```
+
+# 3. Étape 1 — Collecte et contrôle des manquants
+
+```{r collecte}
+# Diagnostic des valeurs manquantes (alerte au-delà de 15 %)
+bs_controler_na(indiv, seuil = 0.15)
+```
+
+# 4. Étape 2 — Traitement : harmonisation géographique
+
+```{r traitement}
+indiv <- bs_harmoniser_regions(indiv, var_region = "region", code_pays = "CM")
+table(indiv$region_std, useNA = "ifany")
+# "Extreme Nord" -> "Extreme-Nord", "Adamawa" -> "Adamaoua"
+```
+
+# 5. Étape 3a — Qualité intrinsèque
+
+```{r qi}
+q <- bs_qualite_intrinseque(indiv, var_age = "age", var_sexe = "sexe")
+bs_whipple(indiv$age)   # attraction des âges ronds
+bs_myers(indiv$age)
+
+# Interprétation dynamique, calibrée sur les seuils des Nations Unies
+print(q$interpretation)
+```
+
+# 6. Étape 3b — Qualité a posteriori : couverture et redressement
+
+```{r dse}
+# (a) estimation par système dual à partir de comptages agrégés
+d <- bs_estimer_dse(n_pes = 5000, n_recensement = 48000,
+                    n_apparies = 4600, n_errones = 200)
+print(d$interpretation)
+
+# (b) coefficients de redressement par strate (urbain / rural)
+strates <- data.frame(
+  strate        = c("Urbain", "Rural"),
+  n_pes         = c(3000, 2000),
+  n_recensement = c(30000, 18000),
+  n_apparies    = c(2850, 1750),
+  n_errones     = c(120, 80)
+)
+coef <- bs_coefficients_redressement(strates = strates)
+print(coef)
+
+# (c) appliquer aux effectifs publiés
+effectifs <- data.frame(strate = c("Urbain","Rural"), population = c(30000, 18000))
+bs_appliquer_redressement(effectifs, coef, "strate", "population")
+```
+
+# 7. Étape 4 — Indicateurs et tableaux
+
+```{r indic}
+bs_indicateur(indiv, "rapport_masc", sex_var = "sexe")
+bs_indicateur(indiv, "pyramide", age_var = "age", sex_var = "sexe")
+
+tableaux <- bs_tableaux(indiv, config = list(age_var = "age", sex_var = "sexe"))
+```
+
+# 8. Étape 5 — Visualisation (identité visuelle appliquée)
+
+```{r viz}
+g <- bs_graph_pyramide(indiv, var_age = "age", var_sexe = "sexe")
+g   # le thème theme_baobabstats() applique automatiquement la charte
+
+# enregistrement multi-format
+bs_enregistrer_graph(g, "pyramide_ages", formats = c("png", "pdf"))
+
+# barres aux couleurs de la charte
+bs_graph_barres(indiv, "region_std", "alphabet",
+                titre = "Taux d'alphabétisation par région")
+```
+
+Pour réutiliser la charte dans vos propres graphiques :
+
+```{r viz2}
+library(ggplot2)
+ggplot(indiv, aes(activite, fill = activite)) +
+  geom_bar() +
+  scale_fill_baobabstats() +
+  theme_baobabstats() +
+  labs(title = "Population par statut d'activité")
+```
+
+# 9. Interprétation dynamique et prompt pour l'IA
+
+```{r prompt}
+# Interprétation automatique de n'importe quel résultat
+bs_interpreter(d)
+
+# Générer un prompt prêt pour Claude / GPT / Gemini
+cat(bs_prompt(d, public = "decideur"))
+# bs_prompt_copier(prompt)   # insère directement dans l'éditeur RStudio
+```
+
+# 10. Étape 7 — Diffusion
+
+```{r diffusion}
+# Rapport de synthèse (HTML / Word / PDF), en-tête aux couleurs baobabStats
+bs_rapport(indiv, "rapport_synthese", format = "html")
+
+# Export d'échange statistique (SDMX-like + DSD JSON)
+agg <- as.data.frame(table(indiv$region_std))
+bs_exporter_sdmx(agg, "export_regions")
+```
+
+# 11. Tout-en-un : pilotage par fichier Excel
+
+```{r pipeline}
+# 1) créer un classeur de configuration documenté
+bs_config_modele("ma_config.xlsx")
+
+# 2) … renseigner les onglets dans Excel (Projet, Collecte, Variables, …) …
+
+# 3) exécuter l'ensemble du pipeline (collecte → diffusion)
+res <- bs_pipeline("ma_config.xlsx")
+print(res)
+```
+
+# 12. Interface graphique et addins RStudio
+
+```{r app}
+bs_app()          # application Shiny unifiée
+bs_catalogue()    # liste de toutes les fonctions par étape
+```
+
+Après installation, le menu **Addins** de RStudio propose également : lancer
+l'application, créer une configuration Excel, exécuter un pipeline, interpréter le
+dernier résultat et générer un prompt IA.
+
+---
+
+*baobabStats © 2026 Charles Mouté — Tools for Data, Rooted in Africa.*

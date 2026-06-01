@@ -1,0 +1,57 @@
+# NAMESPACE - baobabStats (ecrit a la main)
+
+# ---- API unifiee (prefixe bs_) et addins (bsin_) ----
+exportPattern("^bs_")
+exportPattern("^bsin_")
+export(theme_baobabstats)
+export(scale_fill_baobabstats, scale_colour_baobabstats)
+
+# ---- Fonctions moteur exposees aux utilisateurs avances ----
+# Qualite intrinseque (CensusAnalytics)
+export(assess_data_quality, whipple_index, myers_blended_index, bachi_index,
+       check_age_heaping, check_sex_ratio, check_completeness, check_consistency,
+       generate_quality_report)
+# Qualite a posteriori / PES / DSE (DemoStats)
+export(bcstats, quality_check, pes_match, pes_match_auto, pes_reconciliation,
+       dse_estimate, coverage_rate, omission_rate, content_error)
+# Indicateurs (DemoStats)
+export(age_pyramid, sex_ratio, dependency_ratio, median_age,
+       fertility_rates, tfr, asfr, cbr, mortality_rates, life_table, imr, cdr,
+       migration_rates, education_indicators, literacy_rate, employment_indicators,
+       activity_rate, unemployment_rate, disability_prevalence, gender_indicators, gpi)
+# Tables / nettoyage / doublons / projections (CensusAnalytics)
+export(generate_all_tables, table_population_structure, table_age_pyramid,
+       table_nuptiality, standardize_toponyms, impute_missing, impute_mice,
+       impute_missforest, clean_census_data, detect_duplicates, cluster_duplicates,
+       merge_duplicates, project_cohort_component, project_microsimulation,
+       create_projection_scenarios, generate_synthetic_report)
+
+# ---- Methodes S3 ----
+S3method(print, bs_interpretation)
+S3method(print, bs_prompt)
+S3method(print, bs_resultats_pipeline)
+S3method(print, bs_post_censitaire)
+S3method(print, bs_concordance)
+S3method(print, bs_projection_onu)
+S3method(print, bs_sae)
+S3method(print, census_quality)
+S3method(print, census_cleaning_result)
+S3method(print, census_duplicates)
+S3method(print, census_projection)
+S3method(print, census_microsimulation)
+S3method(print, dse_result)
+S3method(print, life_table)
+S3method(print, pes_match_result)
+S3method(print, population_projection)
+S3method(plot, population_projection)
+S3method(print, bcstats_result)
+S3method(print, quality_check_result)
+S3method(print, demostats_tables)
+
+# ---- Imports ----
+importFrom(dplyr, "%>%")
+importFrom(stats, median, sd, var, quantile, weighted.mean, na.omit,
+           complete.cases, setNames, aggregate, reorder, predict)
+importFrom(utils, read.csv, write.csv, read.delim, head, tail, capture.output,
+           browseURL)
+importFrom(grDevices, png, pdf, dev.off, colorRampPalette)

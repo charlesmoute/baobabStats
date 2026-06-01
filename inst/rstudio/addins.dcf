@@ -1,0 +1,24 @@
+Name: baobabStats : Lancer l'application
+Description: Ouvre l'application Shiny unifiee baobabStats.
+Binding: bsin_lancer_app
+Interactive: true
+
+Name: baobabStats : Creer une configuration Excel
+Description: Genere un classeur Excel de configuration modele dans le projet courant.
+Binding: bsin_creer_config
+Interactive: true
+
+Name: baobabStats : Executer un pipeline
+Description: Choisit un classeur de configuration et execute le pipeline complet.
+Binding: bsin_executer_pipeline
+Interactive: true
+
+Name: baobabStats : Interpreter le dernier resultat
+Description: Affiche l'interpretation dynamique du dernier resultat calcule.
+Binding: bsin_interpreter_dernier
+Interactive: true
+
+Name: baobabStats : Generer un prompt IA
+Description: Genere un prompt d'interpretation pour le dernier resultat et l'insere dans l'editeur.
+Binding: bsin_prompt_dernier
+Interactive: true

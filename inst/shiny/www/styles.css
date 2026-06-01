@@ -1,0 +1,52 @@
+/* baobabStats - identite visuelle (baobab enracine dans l'Afrique) */
+/* Palette : ecorce #4A3826 | ecorce_fonce #2E2114 | or #DDA94A | feuille #6E7E2F
+   sable #F3E6C8 | creme #FBF6EC | argile #A86A38 */
+
+.bs-hero {
+  background: linear-gradient(135deg, #2E2114 0%, #4A3826 55%, #5C4327 100%);
+  color: #FBF6EC; padding: 26px 32px; border-radius: 12px; margin-bottom: 18px;
+  border-left: 8px solid #DDA94A;
+}
+.bs-hero h1 { font-weight: 800; letter-spacing: .5px; margin: 0 0 4px 0; color: #FBF6EC; }
+.bs-hero h4 { opacity: .96; margin: 0 0 8px 0; color: #ECC97C; }
+.bs-hero p  { opacity: .9; margin: 0; }
+
+.btn-bs {
+  background-color: #4A3826 !important; color: #FBF6EC !important;
+  border: none !important; border-radius: 8px; font-weight: 600;
+}
+.btn-bs:hover { background-color: #DDA94A !important; color: #2E2114 !important; }
+
+.skin-green .main-header .logo {
+  background-color: #2E2114; font-weight: 800; color: #FBF6EC;
+}
+.skin-green .main-header .logo:hover { background-color: #2E2114; }
+.skin-green .main-header .navbar { background-color: #4A3826; }
+.skin-green .main-sidebar { background-color: #2E2114; }
+.skin-green .sidebar-menu > li.active > a {
+  border-left-color: #DDA94A; background-color: #3A2B1A; color: #FBF6EC;
+}
+.skin-green .sidebar-menu > li > a:hover { border-left-color: #DDA94A; }
+
+.box.box-solid.box-primary > .box-header { background-color: #4A3826; }
+.box.box-primary { border-top-color: #4A3826; }
+.box.box-solid.box-success > .box-header { background-color: #6E7E2F; }
+.box.box-success { border-top-color: #6E7E2F; }
+.box.box-solid.box-warning > .box-header { background-color: #DDA94A; color: #2E2114; }
+.box.box-warning { border-top-color: #DDA94A; }
+.box.box-solid.box-info > .box-header { background-color: #A86A38; }
+.box.box-info { border-top-color: #A86A38; }
+
+.small-box.bg-green { background-color: #6E7E2F !important; color: #FBF6EC !important; }
+.small-box.bg-olive { background-color: #4F5A22 !important; color: #FBF6EC !important; }
+.small-box.bg-orange { background-color: #DDA94A !important; color: #2E2114 !important; }
+.small-box.bg-red { background-color: #A86A38 !important; color: #FBF6EC !important; }
+.small-box.bg-teal { background-color: #4A3826 !important; color: #FBF6EC !important; }
+
+.content-wrapper, .right-side { background-color: #FBF6EC; }
+.nav-tabs-custom > .nav-tabs > li.active { border-top-color: #DDA94A; }
+
+.bs-sidebar-logo { text-align: center; padding: 14px 8px 4px; }
+.bs-sidebar-logo img { max-width: 78%; height: auto; }
+.bs-tagline { color: #ECC97C; font-size: 11px; text-align: center;
+  font-style: italic; padding-bottom: 10px; }
