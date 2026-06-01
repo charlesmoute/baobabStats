@@ -126,7 +126,6 @@ et les différentes versions du logo via `bs_logo()`.
 ## Licence
 
 MIT © 2026 **Charles Mouté** (charles.moute@gmail.com).
-Moteurs d'origine intégrés : DemoStats, CensusAnalytics, statAfrikR.
 
 ---
 
