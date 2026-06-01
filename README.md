@@ -188,7 +188,7 @@ Si baobabStats contribue à un travail publié, vous pouvez le citer ainsi :
 
 Distribué sous licence **MIT** — libre d'utilisation, de modification et de redistribution.
 
-Développé par **Charles Mouté**, au sein de l'Unité de Recherche du Cepoda pour le compte de l'Unité d'Analyse et des Publications du 4ᵉ Recensement Général de la Population et de l'Habitat du **Bureau Central des Recensements et des Études de Population (BUCREP)**, Yaoundé, Cameroun.
+Développé par **Charles Mouté** (charles.moute@cepoda.com), au sein de l'Unité de Recherche du Cepoda pour le compte de l'Unité d'Analyse et des Publications du 4ᵉ Recensement Général de la Population et de l'Habitat du **Bureau Central des Recensements et des Études de Population (BUCREP)**, Yaoundé, Cameroun.
 
 <p align="center">
   <sub>🌳 <em>Tools for Data — Rooted in Africa</em></sub>
