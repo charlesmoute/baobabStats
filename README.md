@@ -180,7 +180,7 @@ Le package vit dans un contexte de production statistique officielle : la stabil
 
 Si baobabStats contribue à un travail publié, vous pouvez le citer ainsi :
 
-> Mouté, C. (2026). *baobabStats : Tools for Data — Rooted in Africa* (version 1.1.1). Bureau Central des Recensements et des Études de Population (BUCREP).
+> Mouté Charles, (2026). *baobabStats : Tools for Data — Rooted in Africa* (version 1.1.1). Consortium d’Expertises en Population et Développement en Afrique (CEPODA - www.cepoda.com).
 
 ---
 
@@ -188,7 +188,7 @@ Si baobabStats contribue à un travail publié, vous pouvez le citer ainsi :
 
 Distribué sous licence **MIT** — libre d'utilisation, de modification et de redistribution.
 
-Développé par **Charles Mouté**, au sein de l'Unité d'Analyse et des Publications du 4ᵉ Recensement Général de la Population et de l'Habitat, **Bureau Central des Recensements et des Études de Population (BUCREP)**, Yaoundé, Cameroun.
+Développé par **Charles Mouté**, au sein de l'Unité de Recherche du Cepoda pour le compte de l'Unité d'Analyse et des Publications du 4ᵉ Recensement Général de la Population et de l'Habitat du **Bureau Central des Recensements et des Études de Population (BUCREP)**, Yaoundé, Cameroun.
 
 <p align="center">
   <sub>🌳 <em>Tools for Data — Rooted in Africa</em></sub>
