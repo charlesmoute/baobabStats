@@ -1,177 +1,333 @@
-# baobabStats <img src="man/figures/logo.png" align="right" height="130" alt="baobabStats" />
+# Tableau de Bord IGL — Indice de Gouvernance Locale
 
-> **Tools for Data — Rooted in Africa**
+> Application R Shiny de visualisation et d'analyse des évaluations communales dans le cadre du programme **PADGOF**, développée pour le **MINDDEVEL** en partenariat avec la **GIZ** — Cameroun.
 
-**Suite intégrée R pour l'analyse des recensements et enquêtes en Afrique.**
+**🌐 Démo en ligne : [charlesmoute.shinyapps.io/igl_dashboard](https://charlesmoute.shinyapps.io/igl_dashboard/)**
 
-baobabStats réunit de manière harmonieuse **trois moteurs expérimentaux
-complémentaires** sous une API unique, cohérente et entièrement en français :
+---
 
-| Moteur d'origine | Apport principal conservé |
-|---|---|
-| **DemoStats** | Appariement post-censitaire (PES), estimation par système dual (DSE), contrôle de terrain `bcstats`, indicateurs démographiques, projections par cohorte. |
-| **CensusAnalytics** | Contrôle qualité intrinsèque (Whipple, Myers, Bachi), nettoyage et imputation (MICE/missForest), dédoublonnage par apprentissage, tabulations thématiques, microsimulation, rapports. |
-| **statAfrikR** | Collecte (CSPro/Kobo/ODK), référentiels géographiques africains, plans de sondage, diffusion (SDMX/DDI). |
+## Présentation
 
-baobabStats ne se contente pas de juxtaposer ces outils : il résout les
-recouvrements (choix de la meilleure implémentation pour chaque besoin), unifie
-la nomenclature (préfixe `bs_`, verbes français) et **ajoute trois innovations** :
+L'**Indice de Gouvernance Locale (IGL)** est un outil de mesure de la qualité de gouvernance des communes camerounaises. Il couvre 360 communes sur quatre domaines : gouvernance administrative, financière, participative et exercice des compétences transférées.
 
-1. **Configuration pilotée par Excel** — paramétrer un traitement reproductible
-   sans écrire de R (`bs_config_modele()`, `bs_pipeline()`).
-2. **Interprétation dynamique** des résultats, calibrée sur les seuils de
-   référence des Nations Unies (`bs_interpreter()`).
-3. **Génération de prompts** pour l'interprétation assistée par IA (`bs_prompt()`).
-4. **Rapports thématiques multi-format** — pour chaque thématique de
-   recensement (et pour la qualité et la projection), production de fichiers
-   **Word, Excel et HTML distincts** avec interprétations dynamiques et
-   redressement post-censitaire (`bs_rapports_thematiques()`).
+Ce tableau de bord permet aux équipes terrain, aux délégations régionales et aux responsables de programme de consulter, filtrer et exporter les résultats des évaluations — le tout depuis une interface sécurisée, sans compétences techniques particulières.
 
-Le tout est accessible via une **application Shiny** et des **modules
-complémentaires RStudio (addins)** installés automatiquement avec le package.
+**Ce que vous pouvez faire avec l'application :**
+
+- Visualiser les scores IGL à l'échelle nationale, régionale, départementale et communale sur une carte interactive
+- Comparer les communes et identifier les domaines à renforcer en priorité
+- Générer des rapports HTML individuels par commune, prêts à partager
+- Synchroniser automatiquement les données depuis KoboToolbox au démarrage
+- Gérer les accès utilisateurs avec des périmètres de données restreints par région, département ou commune
+
+---
+
+## Aperçu de l'application
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  IGL Dashboard v2                      [sync: 18/05 14:32] [Admin ▾]│
+├───────────────┬─────────────────────────────────────────────────────┤
+│               │  Score IGL   │  Communes  │  Meilleure  │  À surveiller│
+│  Navigation   │    0,62      │    360     │  Centre     │  Extrême-Nord│
+│               ├─────────────────────────────────────────────────────┤
+│  Vue Nationale│                                                      │
+│  Analytique   │           [Carte interactive]                        │
+│  Classement   │                                                      │
+│  Export       │  [Répartition]          [Scores par région]          │
+│  Admin        │                                                      │
+│               │  [Tableau de synthèse régional]                      │
+│  ─────────    │                                                      │
+│  Filtres      │                                                      │
+│  Région ▾     │                                                      │
+│  Département ▾│                                                      │
+│  Commune ▾    │                                                      │
+└───────────────┴─────────────────────────────────────────────────────┘
+```
+
+---
+
+## Fonctionnalités
+
+### Tableaux de bord multi-niveaux
+
+Cinq vues complémentaires pour analyser les données à n'importe quelle échelle :
+
+| Vue | Ce qu'elle montre |
+|-----|-------------------|
+| **Nationale** | Carte interactive, KPIs nationaux, répartition de la performance par région |
+| **Régionale** | Profil radar de la région, classement des départements |
+| **Départementale** | Classement des communes, profil de gouvernance du département |
+| **Commune** | Fiche complète avec scores, radar, recommandations par domaine |
+| **Classement** | Tableau interactif trié et filtrable de toutes les communes |
+
+### Onglet Analytique
+
+- Distribution des scores (histogramme) avec repère de la moyenne
+- Boîtes à moustaches pour comparer la dispersion entre régions
+- Carte de chaleur Domaines × Régions pour repérer les points faibles systémiques
+- Barres empilées par niveau de performance
+- Top 10 / Bottom 10 dynamiques selon les filtres actifs
+
+### Gestion des accès
+
+Trois rôles distincts avec des droits progressifs :
+
+| Fonctionnalité | Visualiseur | Évaluateur | Administrateur |
+|---|:---:|:---:|:---:|
+| Consultation des tableaux de bord | ✅ | ✅ | ✅ |
+| Filtres géographiques | ✅ | ✅ | ✅ |
+| Téléchargement CSV | ❌ | ✅ | ✅ |
+| Génération de rapports HTML | ❌ | ✅ | ✅ |
+| Synchronisation KoboToolbox | ❌ | ❌ | ✅ |
+| Gestion des utilisateurs | ❌ | ❌ | ✅ |
+| Journal d'activité | ❌ | ❌ | ✅ |
+
+Chaque utilisateur peut avoir un **périmètre de données restreint** (régions, départements ou communes spécifiques) défini par l'administrateur à la création du compte.
+
+### Intégration KoboToolbox
+
+Les données sont chargées selon une logique en cascade au démarrage :
+
+1. **KoboToolbox** — synchronisation directe via l'API (package `robotoolbox`)
+2. **Cache local** — dernier jeu de données sauvegardé sur le disque
+3. **Démonstration** — 360 communes fictives générées automatiquement
+
+Un badge dans le header indique en permanence quelle source est active.
 
 ---
 
 ## Installation
 
-```r
-# Depuis l'archive fournie
-install.packages("baobabStats_1.0.1.tar.gz", repos = NULL, type = "source")
+### Prérequis
 
-# Ou en développement
-# remotes::install_github("baobabstats/baobabStats")
+- **R** ≥ 4.2 — [cran.r-project.org](https://cran.r-project.org)
+- **RStudio** ≥ 2023.06 (recommandé) — [posit.co](https://posit.co/download/rstudio-desktop)
+
+### Étape 1 — Cloner le dépôt
+
+```bash
+git clone https://github.com/votre-organisation/igl-dashboard.git
+cd igl-dashboard
 ```
 
-Voir `INSTALLATION.md` pour les dépendances système (export Word/PDF) et le
-déploiement sur RStudio Server / Posit Connect.
+### Étape 2 — Installer les dépendances R
+
+```r
+install.packages(c(
+  "shiny", "shinydashboard", "shinyWidgets", "shinymanager",
+  "plotly", "leaflet", "DT", "dplyr", "tidyr", "scales",
+  "htmltools", "waiter", "DBI", "RSQLite"
+))
+
+# Optionnel : pour la connexion KoboToolbox
+install.packages("robotoolbox")
+```
+
+### Étape 3 — Configurer l'environnement
+
+Copiez `.Renviron.example` en `.Renviron` et renseignez vos identifiants :
+
+```bash
+cp .Renviron.example .Renviron
+```
+
+```ini
+# Connexion KoboToolbox
+KOBO_URL=https://kf.kobotoolbox.org
+KOBO_TOKEN=votre_token_api
+KOBO_ASSET_UID=identifiant_du_formulaire
+
+# Passphrase de chiffrement de la base utilisateurs
+IGL_CREDS_PASSPHRASE=une_phrase_longue_et_unique_2025
+```
+
+> **Comment trouver votre token KoboToolbox ?**
+> Connectez-vous sur KoboToolbox → Profil → Paramètres du compte → API → copiez le token.
+
+### Étape 4 — Lancer l'application
+
+```r
+# Depuis RStudio : ouvrir app.R et cliquer sur "Run App"
+# Ou depuis la console :
+shiny::runApp(".")
+```
+
+L'application crée automatiquement le dossier `data/` et initialise la base des utilisateurs au premier lancement.
 
 ---
 
-## Démarrage en 30 secondes
+## Structure du projet
 
-```r
-library(baobabStats)
-
-# 1. Lancer l'interface graphique (aucune ligne de code ensuite)
-bs_app()
-
-# 2. Ou en script : charger les données de démonstration
-chemin <- system.file("extdata", "demo_individus.csv", package = "baobabStats")
-indiv  <- bs_collecter(chemin)
-
-# 3. Contrôle qualité intrinsèque + interprétation automatique
-q <- bs_qualite_intrinseque(indiv, var_age = "age", var_sexe = "sexe")
-print(q$interpretation)
-
-# 4. Couverture post-censitaire et coefficients de redressement
-d   <- bs_estimer_dse(n_pes = 5000, n_recensement = 48000, n_apparies = 4600)
-coef <- bs_coefficients_redressement(dse = d)
-
-# 5. Générer un prompt pour faire interpréter par une IA
-cat(bs_prompt(d, public = "decideur"))
+```
+igl-dashboard/
+├── app.R               # Point d'entrée
+├── global.R            # Config, chargement des données, utilitaires
+├── ui.R                # Interface utilisateur
+├── server.R            # Logique serveur
+├── generate_data.R     # Générateur de données de démonstration
+├── www/
+│   ├── style.css       # Charte graphique
+│   └── logo_igl.svg    # Logo
+├── data/               # Créé automatiquement
+│   ├── credentials.sqlite   # Base des utilisateurs (chiffrée)
+│   ├── igl_data.RData        # Cache des données
+│   └── activity_log.rds     # Journal d'activité
+├── .Renviron.example   # Modèle de configuration
+└── logs/               # Logs applicatifs
 ```
 
 ---
 
-## Le cycle statistique en sept étapes
+## Comptes par défaut
 
-```
-Collecte → Traitement → Qualité → Analyse → Projection → Visualisation → Diffusion
-   │           │           │          │          │             │             │
-bs_collecter bs_nettoyer bs_qualite_* bs_tableau bs_projeter bs_graph_*  bs_rapport
-bs_collecter_cspro/      bs_apparier_pes  bs_indicateur          bs_visualiser_config bs_exporter_sdmx
-kobo/odk   bs_harmoniser_  bs_estimer_dse
-           regions        bs_coefficients_redressement
-```
+Trois comptes sont créés automatiquement au premier lancement.
 
-`bs_catalogue()` liste l'ensemble des fonctions par étape.
+| Identifiant | Mot de passe | Rôle |
+|-------------|-------------|------|
+| `admin` | `Admin@IGL2025!` | Administrateur |
+| `evaluateur` | `Eval@IGL2025!` | Évaluateur |
+| `visualiseur` | `View@IGL2025!` | Visualiseur |
 
-## Pilotage par fichier Excel
-
-```r
-bs_config_modele("ma_config.xlsx")        # crée un classeur documenté
-# … renseigner les onglets dans Excel …
-res <- bs_pipeline("ma_config.xlsx")       # exécute tout le pipeline
-```
-
-Un modèle prêt à l'emploi est fourni :
-`system.file("config", "baobabstats_config_template.xlsx", package = "baobabStats")`.
-
-## Modules RStudio (addins)
-
-Après installation, le menu **Addins** de RStudio propose : lancer l'application,
-créer une configuration Excel, exécuter un pipeline, interpréter le dernier
-résultat et générer un prompt IA.
+> ⚠️ **Ces mots de passe sont publics.** Changez-les immédiatement après le premier lancement. L'interface d'administration complète est accessible en ajoutant `?admin` à l'URL de l'application.
 
 ---
 
-## Pourquoi baobabStats pour l'Afrique ?
+## Périmètres de données par utilisateur
 
-- **Français d'abord** : interfaces, messages et documentation.
-- **Hors-ligne** : fonctionne sans connexion après installation (souveraineté des données).
-- **Qualité au cœur** : contrôle *intrinsèque* (attraction d'âge) **et** *a posteriori*
-  (backcheck, PES/DSE) avec calcul des coefficients de redressement par strate.
-- **Référentiels géographiques africains** intégrés, dont le **Cameroun**.
-- **Prise en main sans code** via Shiny et Excel, pour les INS et les non-initiés.
+L'administrateur peut restreindre les données visibles pour chaque utilisateur. La logique suit une cascade : si des communes sont définies, elles priment sur tout ; sinon les départements priment sur les régions.
 
-## Identité visuelle
+```
+Communes définies  →  ces communes uniquement
+       ↓ sinon
+Départements définis  →  toutes leurs communes
+       ↓ sinon
+Régions définies  →  toutes leurs communes et départements
+       ↓ sinon
+Aucun filtre  →  toutes les données
+```
 
-L'identité de baobabStats est dérivée du logo (un baobab enraciné dans une carte
-d'Afrique) : brun écorce (dominante), or savane, vert feuille, sur fonds crème et
-sable. Elle est appliquée de façon cohérente à toutes les sorties — graphiques
-(`theme_baobabstats()`, `scale_fill_baobabstats()`), application Shiny, classeurs
-Excel et rapports. Les couleurs sont accessibles via `bs_couleurs()` et `bs_palette()`,
-et les différentes versions du logo via `bs_logo()`.
+Le périmètre est configuré dans l'onglet **Administration** lors de la création du compte, avec des sélecteurs en cascade qui se mettent à jour automatiquement.
+
+---
+
+## Déploiement en production
+
+### Sur un serveur Shiny
+
+```bash
+# Déposer l'application dans le dossier des apps Shiny Server
+cp -r igl-dashboard /srv/shiny-server/igl/
+
+# Le fichier .Renviron doit être dans le dossier de l'app
+cp .Renviron /srv/shiny-server/igl/.Renviron
+```
+
+Puis accéder à `http://votre-serveur/igl/`.
+
+### Avec Posit Connect (recommandé pour la production)
+
+Publier directement depuis RStudio via le bouton **Publish** ou avec `rsconnect` :
+
+```r
+rsconnect::deployApp(
+  appDir   = ".",
+  appName  = "igl-dashboard",
+  account  = "votre-compte"
+)
+```
+
+> Les variables d'environnement doivent être configurées dans l'interface de Posit Connect, pas dans le `.Renviron` local.
+
+---
+
+## Architecture technique
+
+```
+┌─────────────────────────────────────────────────┐
+│                   global.R                      │
+│  - Chargement données (KoboToolbox / cache /    │
+│    démo) avec logique en cascade                │
+│  - Initialisation base utilisateurs SQLite      │
+│  - Migration automatique des DBs existantes     │
+│  - apply_user_scope() pour les périmètres       │
+└────────────────┬────────────────────────────────┘
+                 │
+        ┌────────┴─────────┐
+        ▼                  ▼
+   ┌─────────┐        ┌──────────┐
+   │  ui.R   │        │ server.R │
+   │         │        │          │
+   │secure_  │        │secure_   │
+   │app()    │        │server()  │
+   │         │        │          │
+   │sidebarM │        │observe() │
+   │enuOutput│        │user_state│
+   │         │        │reactiveV.│
+   └─────────┘        └──────────┘
+```
+
+Les éléments clés de l'implémentation :
+
+- **Authentification** via `shinymanager` avec base SQLite chiffrée
+- **Gestion des rôles** via `reactiveValues` peuplé dans un `observe()` sur `res_auth$user_info` — la seule approche fiable pour lire les infos utilisateur sans bloquer le rendu
+- **Menu conditionnel** via `sidebarMenuOutput` / `renderMenu` (méthode officielle shinydashboard — `hideTab`/`showTab` ne fonctionne pas sur les `menuItem`)
+- **Périmètre de données** via `igl_data_scoped()`, un réactif qui applique `apply_user_scope()` à chaque render
+- **Radar plots** : `mode = "lines+markers"` explicite pour éviter les warnings plotly
+- **Couleurs plotly** : `unname()` systématique pour éviter le warning jsonlite sur les vecteurs nommés
+
+---
+
+## Données et indicateurs
+
+L'IGL est calculé à partir de **26 indicateurs** répartis sur 4 domaines :
+
+```
+IGL = D1 × 0,35 + D2 × 0,25 + D3 × 0,25 + D4 × 0,15
+```
+
+| Domaine | Poids | Indicateurs couverts |
+|---------|-------|---------------------|
+| D1 — Gouvernance Administrative | 35% | Sessions du conseil, délégations du maire, ressources humaines, contentieux |
+| D2 — Gouvernance Financière | 25% | Exécution budgétaire, recouvrement fiscal, investissements, dette |
+| D3 — Gouvernance Participative | 25% | Comités de quartier, participation citoyenne, information, réclamations |
+| D4 — Compétences Transférées | 15% | Écoles, centres de santé, eau potable, voiries, éclairage, environnement |
+
+Chaque score est interprété selon l'échelle officielle du Guide Méthodologique IGL (MINDDEVEL, 2026) :
+
+| Score | Niveau |
+|-------|--------|
+| > 0,85 | Très bonne gouvernance |
+| 0,70 – 0,85 | Bonne gouvernance |
+| 0,50 – 0,70 | Gouvernance moyenne |
+| 0,25 – 0,50 | Gouvernance faible |
+| < 0,25 | Gouvernance critique |
+
+---
+
+## Contribuer
+
+Les contributions sont les bienvenues, notamment pour :
+
+- La traduction de l'interface en anglais
+- L'ajout de visualisations supplémentaires (évolution temporelle, comparaisons inter-cycles)
+- L'intégration avec d'autres plateformes de collecte de données (ODK, CommCare)
+- L'amélioration du générateur de rapports HTML
+
+Pour contribuer : forkez le dépôt, créez une branche descriptive (`feature/evolution-temporelle`), puis ouvrez une Pull Request avec une description claire des changements.
+
+---
 
 ## Licence
 
-MIT © 2026 **Charles Mouté** (charles.moute@gmail.com).
+Ce projet est développé dans le cadre d'un programme de coopération technique public. Tout usage à des fins commerciales sans accord préalable du MINDDEVEL est interdit.
 
 ---
 
-## Rapports thématiques (nouveau en 1.0.1)
+## Crédits
 
-Production, pour chaque thématique classique d'un recensement, de trois livrables
-**distincts** (`.docx`, `.xlsx`, `.html`). Les sorties **Word** et **HTML**
-contiennent des **interprétations dynamiques** ; le **rapport de projection** en
-est exempté (conformément à la pratique de diffusion).
+Développé pour le programme **PADGOF** (Programme d'Appui à la Décentralisation et à la Gouvernance des Finances publiques locales) dans le cadre de la coopération technique **MINDDEVEL / GIZ** au Cameroun.
 
-```r
-library(baobabStats)
+---
 
-# 1) Données harmonisées
-individus <- bs_collecter("donnees/individus.csv")
-
-# 2) Exploiter l'enquête post-censitaire : qualité + coefficients de redressement
-post <- bs_post_censitaire(
-  recensement = individus,
-  pes         = bs_collecter("donnees/pes.csv"),
-  var_strate  = "region"
-)
-print(post)   # coefficients de redressement par strate + interprétation
-
-# 3) Générer tous les rapports thématiques (Word + Excel + HTML)
-bs_rapports_thematiques(
-  data    = individus,
-  post    = post,                    # effectifs redressés automatiquement
-  dossier = "sorties/rapports",
-  formats = c("word", "excel", "html"),
-  horizon_projection = 10,           # projection sur 10 ans
-  date_collecte      = as.Date("2026-05-01"),
-  niveau_fin         = "arrondissement"
-)
-```
-
-Tout est également pilotable **sans écrire de R**, via le classeur de
-configuration (onglets **Rapports** et **Projection**) :
-
-```r
-bs_config_modele("config.xlsx")   # créer le modèle, puis l'éditer dans Excel
-bs_pipeline("config.xlsx")        # exécute collecte → ... → rapports thématiques
-```
-
-### Thématiques couvertes
-
-structure · nuptialité · éducation · emploi · fécondité · mortalité · migration ·
-handicap · habitat · équipements · peuples autochtones · agriculture · **qualité
-des données** · **projection de la population**.
+*Pour toute question technique, ouvrez une issue. Pour les questions relatives à l'IGL et à son interprétation, contactez directement la Direction de la Décentralisation au MINDDEVEL.*
